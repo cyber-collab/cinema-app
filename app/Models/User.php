@@ -10,17 +10,17 @@ use DateTime;
 #[AllowDynamicProperties]
 class User
 {
-    protected int $id;
+    private int $id;
 
-    protected string $name;
+    private string $name;
 
-    protected string $email;
+    private string $email;
 
-    protected string $password;
+    private string $password;
 
-    protected ?string $created_at = null;
+    private ?string $created_at = null;
 
-    protected ?string $updated_at = null;
+    private ?string $updated_at = null;
 
     public function getId(): int
     {
