@@ -13,25 +13,26 @@ use App\Exceptions\NotFoundObjectException;
 #[AllowDynamicProperties]
 class Movie
 {
-    protected ?int $id = null;
+    private ?int $id = null;
 
-    protected int $userId;
+    private int $userId;
 
-    protected string $title;
-    
-    protected string $format;
+    private string $title;
 
-    protected ?string $question;
+    private string $format;
+
+    private string $releaseYear = '';
 
     protected string $created_at;
 
     public function create(): void
     {
-        $sql = "INSERT INTO movies (title, format, user_id, created_at) VALUES (:title, :format, :user_id, NOW())";
+        $sql = "INSERT INTO movies (title, format, user_id, release_year, created_at) VALUES (:title, :format, :user_id, :release_year, NOW())";
         $params = [
             ':title' => $this->title,
             ':format' => $this->format,
-            ':user_id' => $this->userId
+            ':user_id' => $this->userId,
+            ':release_year' => $this->releaseYear,
         ];
 
         DatabaseHelper::executeQuery($sql, $params);
@@ -70,7 +71,7 @@ class Movie
     /**
      * @throws NotFoundObjectException
      */
-    public static function getById(int $id): ?Survey
+    public static function getById(int $id): ?Movie
     {
         $sql = "SELECT * FROM movies WHERE id = :id";
         $params = [':id' => $id];
@@ -95,6 +96,16 @@ class Movie
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    public function getReleaseYear(): ?string
+    {
+        return $this->releaseYear;
+    }
+
+    public function setReleaseYear(?string $releaseYear): void
+    {
+        $this->releaseYear = $releaseYear;
     }
 
     public function setFormat(string $format): void
@@ -149,5 +160,4 @@ class Movie
             exit("Error: " . $e->getMessage());
         }
     }
-
 }

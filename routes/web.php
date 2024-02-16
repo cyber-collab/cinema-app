@@ -26,7 +26,10 @@ $routes->add('filter_surveys', new Route(constant('URL_SUBFOLDER') . '/filter-su
 $routes->add('update_user', new Route(constant('URL_SUBFOLDER') . '/user/update/{id}', ['controller' => 'UserController', 'method' => 'update'], ['id' => '\d+']));
 
 
-$routes->add('movie', new Route(constant('URL_SUBFOLDER') . '/movie', ['controller' => 'SurveyController', 'method' => 'createMovieForm'], []));
+$routes->add('movie', new Route(constant('URL_SUBFOLDER') . '/movie', ['controller' => 'MovieController', 'method' => 'createMovieForm'], []));
 $routes->add('movie/new', new Route(constant('URL_SUBFOLDER') . '/movie/new', ['controller' => 'MovieController', 'method' => 'createMovie'], []));
 $routes->add('all_movies', new Route(constant('URL_SUBFOLDER') . '/all-movies', ['controller' => 'PageController', 'method' => 'getAllMovies'], []));
-
+$routes->add('list_movies', new Route(constant('URL_SUBFOLDER') . '/profile/list_movies', ['controller' => 'ProfileController', 'method' => 'listMovies'], []));
+$routes->add('edit_movie', new Route(constant('URL_SUBFOLDER') . '/movie/edit/{id}', ['controller' => 'MovieController', 'method' => 'editMovieForm'], ['id' => '\d+']));
+$routes->add('update_movie', new Route(constant('URL_SUBFOLDER') . '/movie/update/{id}', ['controller' => 'MovieController', 'method' => 'editMovie'], ['id' => '\d+']));
+$routes->add('delete_movie', new Route(constant('URL_SUBFOLDER') . '/movie/delete/{id}', ['controller' => 'MovieController', 'method' => 'deleteMovie'], ['id' => '\d+']));

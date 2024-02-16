@@ -1,9 +1,9 @@
 <?php include "header.php"; ?>
 
 <div class="container mt-5">
-    <h1>List of Surveys</h1>
-    <?php if (empty($moveis)): ?>
-        <p>No surveys found.</p>
+    <h1>List of Movies</h1>
+    <?php if (empty($movies)): ?>
+        <p>No movies found.</p>
     <?php else: ?>
         <!-- <form action="/filter-surveys" method="post">
             <div class="form-group">
@@ -27,33 +27,12 @@
 
         <?php foreach ($movies as $movie): ?>
             <div class="mb-4">
-                <ul class="list-group">
+        <ul class="list-group">
                     <li class="list-group-item">
-                        <strong>Title:</strong> <?php echo $movei->getTitle(); ?><br>
-                        <strong>Status:</strong> <?php echo $movei->getFormat(); ?><br>
-                    </li>
-                    <!-- <?php foreach ($survey->questions as $question): ?>
-                        <li class="list-group-item">
-                            <strong>Question:</strong> <?php echo $question->question_text; ?><br>
-                            <?php if (!empty($question->options)): ?>
-                                <form action="/record-vote" method="post">
-                                    <input type="hidden" name="question_id" value="<?php echo $question->getId(); ?>">
-                                    <ul class="list-group">
-                                        <?php foreach ($question->options as $answer): ?>
-                                            <li class="list-group-item">
-                                                <input type="radio" required name="answer_id" value="<?php echo $answer->getId(); ?>">
-                                                <label class="form-check-label"> <?php echo $answer->answer_text ?>
-                                                    - Numbers votes <?php echo $answer->getVotes()?></label>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                    <button type="submit" class="btn btn-primary mb-3 mt-3">Vote</button>
-                                </form>
-                            <?php else: ?>
-                                <p>No answers found for this question.</p>
-                            <?php endif; ?>
-                        </li> -->
-                    <?php endforeach; ?>
+                        <strong>Title:</strong> <?php echo $movie->getTitle(); ?><br>
+                        <strong>Fromat:</strong> <?php echo $movie->getFormat(); ?><br>
+                        <strong>Realise year:</strong> <?php echo $movie->getReleaseYear(); ?><br>
+                    </li>                   
                 </ul>
             </div>
         <?php endforeach; ?>

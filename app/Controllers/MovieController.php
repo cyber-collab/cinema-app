@@ -9,9 +9,8 @@ use App\Models\Movie;
 use App\Models\Answer;
 use App\Models\Survey;
 use App\Models\Question;
-use App\Services\SurveyService;
-use JetBrains\PhpStorm\NoReturn;
 use App\Exceptions\NotFoundObjectException;
+use App\Services\MovieService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -27,27 +26,19 @@ class MovieController
      */
     public function createMovie(RouteCollection $routes, Request $request): void
     {
+
         $title = $request->get('title');
         $format = $request->get('format');
+        $realiseYear = $request->get('realise_year');
         $currentUser = User::getCurrentUser();
 
         $movie = new Movie();
         $movie->setUserId($currentUser->getId());
         $movie->setTitle($title);
         $movie->setFormat($format);
-        $movie->create();
-        // $this->processQuestions($request, function($question, $questionIndex) use ($movie, $request) {
-        //     $question->setSurveyId($movie->getId());
-        //     $question->create();
+        $movie->setReleaseYear($realiseYear);
 
-        //     $this->processAnswers(
-        //     $request, function($answerText, $questionIndex) use ($question) {
-        //         $answer = new Answer();
-        //         $answer->setQuestionId($question->getId());
-        //         $answer->setAnswerText($answerText);
-        //         $answer->create();
-        //     });
-        // });
+        $movie->create();
 
         header("Location: /profile/list_movies");
         exit();
@@ -70,73 +61,51 @@ class MovieController
     /**
      * @throws NotFoundObjectException
      */
-    public function editSurveyForm(RouteCollection $routes, ?Request $request, ?int $id): void
+    public function editMovieForm(RouteCollection $routes, ?Request $request, ?int $id): void
     {
-        $survey = Survey::getById($id);
+        $movie = Movie::getById($id);
 
-        if ($survey) {
-            require_once APP_ROOT . '/views/edit_survey.php';
+        if ($movie) {
+            require_once APP_ROOT . '/views/edit_movie.php';
         }
     }
 
     /**
      * @throws Exception
      */
-    public function editSurvey(RouteCollection $routes, Request $request, ?int $id): void
+    public function editMovie(RouteCollection $routes, Request $request, ?int $id): void
     {
         $title = $request->get('title');
-        $status = $request->get('status');
-        $questionTexts = $request->get('question_text');
-        $answerTexts = $request->get('answer_text');
+        $format = $request->get('format');
+        $realseYear = $request->get('realise_year');
 
-        $surveyService = new SurveyService();
-        $surveyService->processSurveyData($id, $title, $status, $questionTexts, $answerTexts);
+        $movieService = new MovieService();
+        $movieService->processMovieData($id, $title, $format, $realseYear);
 
-        $deletedQuestions = $request->get('deleted_questions');
-        if (isset($deletedQuestions)) {
-            foreach ($deletedQuestions as $deletedQuestionId) {
-                $answers = Answer::getAnswersByQuestionId($deletedQuestionId);
-                foreach ($answers as $answer) {
-                    $answer->delete();
-                }
-
-                $deletedQuestion = Question::getById($deletedQuestionId);
-                $deletedQuestion?->delete();
-            }
-        }
-
-        $deletedAnswers = $request->get('deleted_answers');
-        if (isset($deletedAnswers)) {
-            foreach ($deletedAnswers as $deletedAnswerId) {
-                $deletedAnswer = Answer::getById($deletedAnswerId);
-                $deletedAnswer?->delete();
-            }
-        }
-
-        header("Location: /profile/list_surveys", true, 200);
+        header("Location: /profile/list_movies", true, 200);
         exit();
     }
 
     /**
      * @throws Exception
      */
-    // public function deleteMovie(RouteCollection $routes, Request $request, int $id): void
-    // {
-    //     $actors = Actor::getActorsByMovieId($id);
-    //     foreach ($actors as $actor) {
+    public function deleteMovie(RouteCollection $routes, Request $request, int $id): void
+    {
+        // $actors = Actor::getActorsByMovieId($id);
+        // foreach ($actors as $actor) {
 
-    //         $question->delete();
-    //     }
+        //     $question->delete();
+        // }
 
-    //     $survey = Survey::getById($id);
+        $movie = Movie::getById($id);
 
-    //     if ($survey) {
-    //         $survey->delete();
+        if ($movie) {
+            $movie->delete();
 
-    //         header("Location: /profile/list_surveys");
-    //         exit();
-    //     }
-    // }
+            header("Location: /profile/list_movies");
+            exit();
+        }
+    }
 
     public function filterSurveys(RouteCollection $routes, Request $request): void
     {
@@ -158,38 +127,16 @@ class MovieController
             $sql .= " AND DATE(created_at) = '$publishedDate'";
         }
 
-        $surveys = Survey::getSurveysByCustomQuery($sql);
+        // $surveys = Survey::getSurveysByCustomQuery($sql);
 
-        foreach ($surveys as $survey) {
-            $survey->questions = Question::getQuestionsBySurveyId($survey->getId());
+        // foreach ($surveys as $survey) {
+            // $survey->questions = Question::getQuestionsBySurveyId($survey->getId());
 
-            foreach ($survey->questions as $question) {
-                $question->options = Answer::getAnswersByQuestionId($question->getId());
-            }
-        }
+            // foreach ($survey->questions as $question) {
+                // $question->options = Answer::getAnswersByQuestionId($question->getId());
+            // }
+        // }
 
         require_once APP_ROOT . '/views/filtered_surveys.php';
     }
-
-    /**
-     * @throws Exception
-     */
-    // public function recordVote(RouteCollection $routes, Request $request): void
-    // {
-    //     $questionId = $request->get('question_id');
-    //     $answerId = $request->get('answer_id');
-
-    //     $question = Question::getById($questionId);
-    //     $answer = Answer::getById($answerId);
-
-    //     if ($question === null || $answer === null) {
-    //         echo "Invalid question or answer";
-    //         exit();
-    //     }
-
-    //     Answer::recordVote($questionId, $answerId);
-
-    //     header("Location: /all-surveys");
-    //     exit();
-    // }
 }

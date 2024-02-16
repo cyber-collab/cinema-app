@@ -10,22 +10,24 @@ class MovieService
     /**
      * @throws NotFoundObjectException
      */
-    public function processMovieData(int $id, string $title, string $format, array $questionData, array $answerData): void
+    public function processMovieData(int $id, string $title, string $format, string $realseYear): void
     {
-        $format = Movie::getById($id);
+        $movies = Movie::getById($id);
 
-        if ($format) {
-            $format->setTitle($title);
-            $format->setFormat($format);
-            $format->update();
+        if ($movies) {
+            $movies->setTitle($title);
+            $movies->setFormat($format);
+            $movies->setReleaseYear($realseYear);
+            $movies->update();
         }
     }
 
     public static function processMoveis(array $movies): void
     {
-        foreach ($movies as $movie) {
-           
-        }
+         foreach ($movies as $movie)
+         {
+            $movie->setReleaseYear($movie->release_year);
+         }
     }
 }
 
