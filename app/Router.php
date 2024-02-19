@@ -2,16 +2,24 @@
 
 namespace App;
 
+use App\Services\ActorService;
+use App\Services\MovieService;
+use App\Services\MovieFilterService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\Exception\NoConfigurationException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Exception\NoConfigurationException;
 
 class Router
 {
+
+    public function __construct(private readonly MovieService $movieService,  private readonly ActorService $actorService, private readonly MovieFilterService $movieFilterService)
+    {
+    }
+
     public function __invoke(RouteCollection $routes): void
     {
         $context = new RequestContext();
@@ -33,7 +41,7 @@ class Router
             });
 
             $className = '\\App\\Controllers\\' . $matcher['controller'];
-            $classInstance = new $className();
+            $classInstance = new $className($this->movieService, $this->actorService, $this->movieFilterService);
 
             $request = Request::createFromGlobals();
             // Add routes and request as parameters to the next class
@@ -46,7 +54,7 @@ class Router
             if (isset($matcher['id'])) {
                 $params['id'] = $matcher['id'];
             }
-          call_user_func_array(array($classInstance, $matcher['method']), $params);
+            call_user_func_array(array($classInstance, $matcher['method']), $params);
 
         } catch (MethodNotAllowedException $e) {
             echo 'Route method is not allowed.';
@@ -59,5 +67,12 @@ class Router
 }
 
 // Invoke
-$router = new Router();
+$movieService = new MovieService();
+$actorService = new ActorService();
+$movieFilterService = new MovieFilterService();
+
+// Створення об'єкта маршрутизатора з передачею залежностей
+$router = new Router($movieService, $actorService, $movieFilterService);
+
+// Виклик методу __invoke
 $router($routes);
