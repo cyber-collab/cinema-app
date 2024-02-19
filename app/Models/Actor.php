@@ -6,8 +6,6 @@ use AllowDynamicProperties;
 use App\Helpers\DatabaseHelper;
 use App\Models\Database;
 use Exception;
-use PDO;
-use PDOException;
 
 #[AllowDynamicProperties]
 class Actor
@@ -38,17 +36,17 @@ class Actor
         $this->actorName = $actorName;
     }
 
-    public function setSurveyId(int $movieId): void
+    public function setMovieId(int $movieId): void
     {
         $this->movieId = $movieId;
     }
 
     public function create(): void
     {
-        $sql = "INSERT INTO questions (movie_id, actor_name) VALUES (:survey_id, :actor_name)";
+        $sql = "INSERT INTO actors (movie_id, name) VALUES (:movie_id, :name)";
         $params = [
             ':movie_id' => $this->movieId,
-            ':actor_name' => $this->actorName
+            ':name' => $this->actorName
         ];
 
         DatabaseHelper::executeQuery($sql, $params);
@@ -59,11 +57,11 @@ class Actor
 
     public function update(): void
     {
-        $sql = "UPDATE actors SET movie_id = :movie_id, actor_name = :actor_name WHERE id = :id";
+        $sql = "UPDATE actors SET movie_id = :movie_id, name = :name WHERE id = :id";
         $params = [
             ':id' => $this->id,
             ':movie_id' => $this->movieId,
-            ':actor_name' => $this->actorName
+            ':name' => $this->actorName
         ];
 
         DatabaseHelper::executeQuery($sql, $params);
@@ -85,7 +83,7 @@ class Actor
         return DatabaseHelper::executeFetchAll($sql, $params, 'App\Models\Actor');
     }
 
-    public static function getById(int $id): ?Question
+    public static function getById(int $id): self
     {
         $sql = "SELECT * FROM actors WHERE id = :id";
         $params = [':id' => $id];
@@ -93,10 +91,14 @@ class Actor
         return DatabaseHelper::executeFetchObject($sql, $params, 'App\Models\Actor');
     }
 
-    /**
-     * @throws Exception
-     */
     public function getActors(): array {
         return self::getActorsByMovieId($this->getId());
     }
+
+    /**
+     * @throws Exception
+     */
+    // public function getActors(): array {
+    //     return self::getActorsByMovieId($this->getId());
+    // }
 }

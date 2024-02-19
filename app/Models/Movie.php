@@ -60,7 +60,7 @@ class Movie
         DatabaseHelper::executeQuery($sql, $params);
     }
 
-    public static function getmMoviesByUserId(int $userId): array
+    public static function getMoviesByUserId(int $userId): array
     {
         $sql = "SELECT * FROM movies WHERE user_id = :userId";
         $params = [':userId' => $userId];
@@ -147,7 +147,7 @@ class Movie
         $this->created_at = $created_at;
     }
 
-    public static function getSurveysByCustomQuery($sql): ?array
+    public static function getMoviesByCustomQuery($sql): ?array
     {
         $db = Database::getInstance();
 

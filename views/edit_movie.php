@@ -22,6 +22,18 @@
             <input type="date" id="realise_year" name="realise_year" class="form-control"  value="<?php echo $movie->getReleaseYear(); ?>" required>
         </div>
 
+        <?php foreach ($movie->getActors() as $actor): ?>
+            <div class="form-group actor-group">
+                <div class="mb-3"></div>
+                <label for="actor_<?php echo $actor->getId(); ?>">Actor Name:</label>
+                <input type="text" name="actor_text[<?php echo $actor->getId(); ?>]" class="form-control" value="<?php echo $actor->name; ?>">
+
+                <button type="button" class="btn btn-danger remove-actor ml-2">Remove Actor</button>
+            </div>
+        <?php endforeach; ?>
+        <div id="actorsContainer">
+        </div>
+
         <div class="form-group mt-4">
             <button type="submit" class="btn btn-success">Save Changes</button>
         </div>
@@ -30,77 +42,31 @@
 <?php include "footer.php"; ?>
 <script>
     $(document).ready(function() {
-        function generateUniqueId() {
-            return 'new_' + Date.now();
-        }
+        let actorCounter = 0;
 
-        $(document).on('click', '.add-question', function() {
-            const questionsContainer = $('#questionsContainer');
-            const newQuestionId = generateUniqueId();
-            const newAnswerId = generateUniqueId();
-
-            const newQuestionGroup = $(
-                '<div class="form-group question-group">' +
-                '<div class="mb-3"></div>' +
-                '<label for="question_text">Question Text:</label>' +
-                `<input type="text" name="question_text[${newQuestionId}]" class="form-control">` +
-                '<div class="form-group answers-group ml-3">' +
-                '<label for="answer_text">Answer Text:</label>' +
-                `<input type="text" name="answer_text[${newQuestionId}][${newAnswerId}]" class="form-control">` +
-                '<button type="button" class="btn btn-danger remove-answer">Remove Answer</button>' +
-                '</div>' +
-                '<div class="mt-2">' +
-                '<button type="button" class="btn btn-primary add-answer">Add Answer</button>' +
-                '<button type="button" class="btn btn-danger remove-question ml-2">Remove Question</button>' +
-                '</div>' +
-                '</div>'
+        $(document).on('click', '.add-actor', function() {
+            const actorsContainer = $('#actorsContainer');
+            const newActorGroup = $(
+                `<div class="form-group actor-group" data-actor="${actorCounter}">` +
+                `<label for="actor_text_${actorCounter}">Actor Text:</label>` +
+                `<input type="text" name="actor_text[${actorCounter}]" class="form-control" id="actor_text_${actorCounter}" required>` +
+                `<button type="button" class="btn btn-danger remove-actor ml-2">Remove Actor</button>` +
+                `</div>`
             );
-
-            questionsContainer.append(newQuestionGroup);
+            actorsContainer.append(newActorGroup);
+            actorCounter++;
         });
 
-        $(document).on('click', '.add-answer', function() {
-            const newAnswerId = generateUniqueId();
+        $(document).on('click', '.remove-actor', function() {
+            const actorGroup = $(this).closest('.actor-group');
+            const actorIdInput = actorGroup.find('input[name^="actor_text["]');
+            const actorId = actorIdInput.attr('name').match(/\[(\d+)\]/)[1];
 
-            const newAnswerInput = $(
-                '<div class="mb-3">' +
-                `<input type="text" name="answer_text[<?php echo $question->getId()?>][${newAnswerId}]" class="form-control">` +
-                '<button type="button" class="btn btn-danger remove-answer mt-2">Remove Answer</button>' +
-                '</div>'
-            );
+            const deletedActorsInput = $('<input type="hidden" name="deleted_actors[]">');
+            deletedActorsInput.val(actorId);
 
-            const addAnswerButton = $(this).closest('.question-group').find('.add-answer');
-            addAnswerButton.before(newAnswerInput);
-        });
-
-        $(document).on('click', '.remove-question', function() {
-            const questionGroup = $(this).closest('.question-group');
-            const questionIdInput = questionGroup.find('input[name^="question_text["]');
-            const questionId = questionIdInput.attr('name').match(/\[(\d+)\]/)[1];
-
-            const deletedQuestionsInput = $('<input type="hidden" name="deleted_questions[]">');
-            deletedQuestionsInput.val(questionId);
-
-            questionGroup.replaceWith(deletedQuestionsInput);
-        });
-
-        $(document).on('click', '.remove-answer', function() {
-            const answerText = $(this).siblings('.answer-text');
-            const nameAttribute = answerText.attr('name');
-
-            if (nameAttribute == null) {
-                $(this).closest('.mb-3').remove();
-            } else {
-                const match = nameAttribute.match(/\[(\d+)\]\[(\d+)\]/);
-
-                if (match) {
-                    const answerId = match[2];
-                    const deletedAnswersInput = $('<input type="hidden" name="deleted_answers[]">');
-                    deletedAnswersInput.val(answerId);
-
-                    $(this).closest('.mb-3').replaceWith(deletedAnswersInput);
-                }
-            }
+            actorGroup.replaceWith(deletedActorsInput);
         });
     });
 </script>
+

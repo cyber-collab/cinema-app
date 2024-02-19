@@ -6,9 +6,6 @@ use Exception;
 use App\Models\User;
 use App\Models\Actor;
 use App\Models\Movie;
-use App\Models\Answer;
-use App\Models\Survey;
-use App\Models\Question;
 use App\Exceptions\NotFoundObjectException;
 use App\Services\MovieService;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,20 +37,25 @@ class MovieController
 
         $movie->create();
 
+        $this->processActors($request, function($actor) use ($movie, $request) {
+            $actor->setMovieId($movie->getId());
+            $actor->create();
+        });
+
         header("Location: /profile/list_movies");
         exit();
     }
 
-
     private function processActors(Request $request, $callback): void
     {
-        $answerTexts = $request->get('answer_text');
+        $actorNames = $request->get('actor_text');
 
-        if ($answerTexts && is_array($answerTexts)) {
-            foreach ($answerTexts as $questionIndex => $answers) {
-                foreach ($answers as $answerText) {
-                    $callback($answerText, $questionIndex);
-                }
+        if ($actorNames && is_array($actorNames)) {
+            foreach ($actorNames as $actorIndex => $actorName) {
+                $actor = new Actor();
+                $actor->setActorName($actorName);
+
+                $callback($actor, $actorIndex);
             }
         }
     }
@@ -64,7 +66,7 @@ class MovieController
     public function editMovieForm(RouteCollection $routes, ?Request $request, ?int $id): void
     {
         $movie = Movie::getById($id);
-
+        
         if ($movie) {
             require_once APP_ROOT . '/views/edit_movie.php';
         }
@@ -78,9 +80,18 @@ class MovieController
         $title = $request->get('title');
         $format = $request->get('format');
         $realseYear = $request->get('realise_year');
+        $actors = $request->get('actor_text');
+        $deletedActors = $request->get('deleted_actors');
+
+        if (isset($deletedActors)) {
+            foreach ($deletedActors as $deleteActor => $deletedActorId) {
+                $deleteActor = Actor::getById($deletedActorId);
+                $deleteActor?->delete();
+            }
+        }
 
         $movieService = new MovieService();
-        $movieService->processMovieData($id, $title, $format, $realseYear);
+        $movieService->processMovieData($id, $title, $format, $realseYear, $actors);
 
         header("Location: /profile/list_movies", true, 200);
         exit();
@@ -91,11 +102,11 @@ class MovieController
      */
     public function deleteMovie(RouteCollection $routes, Request $request, int $id): void
     {
-        // $actors = Actor::getActorsByMovieId($id);
-        // foreach ($actors as $actor) {
-
-        //     $question->delete();
-        // }
+        $actors = Actor::getActorsByMovieId($id);
+        
+        foreach ($actors as $actor) {
+            $actor->delete();
+        }
 
         $movie = Movie::getById($id);
 
@@ -107,13 +118,12 @@ class MovieController
         }
     }
 
-    public function filterSurveys(RouteCollection $routes, Request $request): void
+    public function filterMovies(RouteCollection $routes, Request $request): void
     {
         $title = $request->get('title');
-        $status = $request->get('status');
-        $publishedDate = $request->get('created_at');
+        $status = $request->get('actor_text');
 
-        $sql = "SELECT * FROM surveys WHERE 1";
+        $sql = "SELECT * FROM movies WHERE 1";
 
         if ($title) {
             $sql .= " AND title LIKE '%$title%'";
@@ -123,20 +133,13 @@ class MovieController
             $sql .= " AND status = '$status'";
         }
 
-        if ($publishedDate) {
-            $sql .= " AND DATE(created_at) = '$publishedDate'";
+        $movies = Movie::getMoviesByCustomQuery($sql);
+
+        foreach ($movies as $movie) {
+            $movie->actor = Actor::getActorsByMovieId($movie->getId());
+
         }
 
-        // $surveys = Survey::getSurveysByCustomQuery($sql);
-
-        // foreach ($surveys as $survey) {
-            // $survey->questions = Question::getQuestionsBySurveyId($survey->getId());
-
-            // foreach ($survey->questions as $question) {
-                // $question->options = Answer::getAnswersByQuestionId($question->getId());
-            // }
-        // }
-
-        require_once APP_ROOT . '/views/filtered_surveys.php';
+        require_once APP_ROOT . '/views/filtered_movies.php';
     }
 }

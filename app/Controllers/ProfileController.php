@@ -4,10 +4,8 @@ namespace App\Controllers;
 
 use App\Exceptions\NotFoundObjectException;
 use App\Models\Movie;
-use App\Models\Survey;
 use App\Models\User;
 use App\Services\MovieService;
-use App\Services\SurveyService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -33,7 +31,7 @@ class ProfileController
     public function listMovies(RouteCollection $routes, ?Request $request): void
     {
         $currentUser = User::getCurrentUser();
-        $movies = Movie::getmMoviesByUserId($currentUser->getId());
+        $movies = Movie::getMoviesByUserId($currentUser->getId());
         MovieService::processMoveis($movies);
 
         require_once APP_ROOT . '/views/list_movies.php';

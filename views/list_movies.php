@@ -12,7 +12,15 @@
                         <strong>Format:</strong> <?php echo $movie->getFormat(); ?><br>
                         <strong>Date:</strong> <?php echo $movie->getReleaseYear(); ?><br>
                     </li>
-
+                    <?php foreach ($movie->actors as $actor): ?>
+                        <li class="list-group-item">
+                            <?php if (!empty($actor->name)): ?>
+                                <strong>Actor:</strong> <?php echo $actor->name; ?><br>
+                            <?php else: ?>
+                                <p>No actor found for this movie.</p>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
                     <a href="/movie/edit/<?php echo $movie->getId(); ?>" class="btn btn-primary mb-2 mt-2">Edit</a>
                     <a href="/movie/delete/<?php echo $movie->getId(); ?>" class="btn btn-primary mt-2">Delete</a>
                 </ul>
