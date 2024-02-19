@@ -39,8 +39,8 @@ class ProfileController
 
     public function logout(RouteCollection $routes, ?Request $request): void
     {
-       User::logout();
+        User::logout();
 
-       echo "You have been logged out.";
+        echo "You have been logged out.";
     }
 }

@@ -25,3 +25,4 @@ $routes->add('edit_movie', new Route(constant('URL_SUBFOLDER') . '/movie/edit/{i
 $routes->add('update_movie', new Route(constant('URL_SUBFOLDER') . '/movie/update/{id}', ['controller' => 'MovieController', 'method' => 'editMovie'], ['id' => '\d+']));
 $routes->add('delete_movie', new Route(constant('URL_SUBFOLDER') . '/movie/delete/{id}', ['controller' => 'MovieController', 'method' => 'deleteMovie'], ['id' => '\d+']));
 $routes->add('filter_movies', new Route(constant('URL_SUBFOLDER') . '/filter-movies', ['controller' => 'MovieController', 'method' => 'filterMovies'], []));
+$routes->add('movie_upload', new Route(constant('URL_SUBFOLDER') . '/movie-upload', ['controller' => 'MovieController', 'method' => 'uploadMoviesFile'], []));

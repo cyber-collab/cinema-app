@@ -15,8 +15,7 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class Router
 {
-
-    public function __construct(private readonly MovieService $movieService,  private readonly ActorService $actorService, private readonly MovieFilterService $movieFilterService)
+    public function __construct(private readonly MovieService $movieService, private readonly ActorService $actorService, private readonly MovieFilterService $movieFilterService)
     {
     }
 
@@ -32,10 +31,8 @@ class Router
             $matcher = $matcher->match($arrayUri[0]);
 
             // Cast params to int if numeric
-            array_walk($matcher, function(&$param)
-            {
-                if(is_numeric($param))
-                {
+            array_walk($matcher, function (&$param) {
+                if(is_numeric($param)) {
                     $param = (int) $param;
                 }
             });
@@ -45,7 +42,8 @@ class Router
 
             $request = Request::createFromGlobals();
             // Add routes and request as parameters to the next class
-            $params = array_merge(array_slice($matcher, 2, -1),
+            $params = array_merge(
+                array_slice($matcher, 2, -1),
                 array(
                     'routes' => $routes,
                     'request' => $request ?? null,

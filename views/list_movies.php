@@ -1,6 +1,19 @@
 <?php include 'header.php'; ?>
 <main class="container mt-5">
     <h1>List of Movies</h1>
+    
+    <form action="/movie-upload" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+        <input type="file" id="file" name="file" accept=".txt">
+        <button type="submit">Upload</button>
+        </div>
+    </form>
+
+    <div class="mb-3">
+  <label for="formFile" class="form-label">Default file input example</label>
+  <input class="form-control" type="file" id="formFile">
+</div>
+
     <?php if (empty($movies)): ?>
         <p>No movies found.</p>
     <?php else: ?>

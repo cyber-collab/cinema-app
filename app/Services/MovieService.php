@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Actor;
 use App\Models\Movie;
+use App\Exceptions\UploadException;
 use App\Exceptions\NotFoundObjectException;
 
 class MovieService
@@ -38,7 +39,11 @@ class MovieService
         $currentUser = User::getCurrentUser();
 
         $movie = new Movie();
-        $movie->setUserId($currentUser->getId());
+        if(isset($currentUser)) {
+            $movie->setUserId($currentUser->getId());
+        } else {
+            $movie->setUserId(1);
+        }
         $movie->setTitle($title);
         $movie->setFormat($format);
         $movie->setReleaseYear($realiseYear);
@@ -107,11 +112,65 @@ class MovieService
 
     public static function processMoveis(array $movies): void
     {
-        foreach ($movies as $movie)
-        {
+        foreach ($movies as $movie) {
             $movie->setReleaseYear($movie->release_year);
             $movie->actors = Actor::getActorsByMovieId($movie->getId());
         }
     }
-}
 
+    public function uploadMovieDataFile(array $file): void
+    {
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            throw new UploadException("Upload failed with error code {$file['error']}");
+        }
+
+        $data = file_get_contents($file['tmp_name']);
+        $data = preg_replace('/^[\x{FEFF}\r\n]+/u', '', $data);
+
+        $lines = explode("\n", $data);
+
+        $title = '';
+        $releaseYear = 1970;
+        $format = '';
+        $stars = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            if (empty($line)) {
+
+                if (!empty($title)) {
+                    $this->createMovie($title, $format, $releaseYear, $stars);
+                    $title = '';
+                    $releaseYear = 1970;
+                    $format = '';
+                    $stars = [];
+                }
+            } else {
+                list($key, $value) = explode(':', $line, 2);
+                switch ($key) {
+                    case 'Title':
+                        $title = trim($value);
+                        break;
+                    case 'Release Year':
+                        $releaseYear = (int) trim($value);
+                        break;
+                    case 'Format':
+                        $format = trim($value);
+                        break;
+                    case 'Stars':
+                        $stars = explode(', ', $value);
+                        break;
+                }
+            }
+        }
+
+        if (!empty($title)) {
+            $this->createMovie($title, $format, $releaseYear, $stars);
+        }
+
+        echo "File uploaded successfully.";
+
+    }
+
+}

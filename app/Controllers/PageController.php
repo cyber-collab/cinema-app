@@ -14,12 +14,12 @@ use Symfony\Component\Routing\RouteCollection;
 
 class PageController
 {
-	public function index(RouteCollection $routes, ?Request $request): void
-	{
+    public function index(RouteCollection $routes, ?Request $request): void
+    {
         $user = User::getCurrentUser();
 
         require_once APP_ROOT . '/views/home.php';
-	}
+    }
 
     public function getAllMovies(RouteCollection $routes, ?Request $request): void
     {

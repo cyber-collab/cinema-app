@@ -13,7 +13,7 @@ use App\Services\MovieFilterService;
 
 class MovieController
 {
-    public function __construct(private readonly MovieService $movieService,  private readonly ActorService $actorService, private readonly MovieFilterService $movieFilterService)
+    public function __construct(private readonly MovieService $movieService, private readonly ActorService $actorService, private readonly MovieFilterService $movieFilterService)
     {
     }
 
@@ -70,5 +70,15 @@ class MovieController
         }
 
         return new Response(require_once APP_ROOT . '/views/filtered_movies.php');
+    }
+
+    public function uploadMoviesFile(RouteCollection $routes, Request $request)
+    {
+        $uploadedFile = $_FILES['file'];
+
+        $this->movieService->uploadMovieDataFile($uploadedFile);
+
+        header("Location: /profile/list_movies");
+        exit();
     }
 }
