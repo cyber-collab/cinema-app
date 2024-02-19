@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 use AllowDynamicProperties;
-use App\Models\Database;
+use App\Helpers\Database;
 use PDO;
 use PDOException;
 

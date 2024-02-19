@@ -60,25 +60,18 @@ class MovieService
             $movie->setTitle($title);
             $movie->setFormat($format);
             $movie->setReleaseYear($realiseYear);
-            $movie->update();
 
-            if(empty($deletedActorId)){
-                return;
-            }
-
-            foreach ($deletedActorIds as $deletedActorId) {
-                $actor = Actor::getById($deletedActorId);
-                if ($actor) {
-                    $actor->delete();
+            if (!empty($deletedActorIds)) {
+                foreach ($deletedActorIds as $deletedActorId) {
+                    $actor = Actor::getById($deletedActorId);
+                    if ($actor) {
+                        $actor->delete();
+                    }
                 }
             }
 
-            foreach ($actorNames as $actorName) {
-                $actor = new Actor();
-                $actor->setActorName($actorName);
-                $actor->setMovieId($id);
-                $actor->create();
-            }
+            $movieService = new MovieService();
+            $movieService->processMovieData($id, $title, $format, $realiseYear, $actorNames);
         }
     }
 

@@ -2,15 +2,9 @@
 
 namespace App\Models;
 
-use PDO;
-use PDOException;
-use App\Models\Actor;
-use App\Models\Database;
-use AllowDynamicProperties;
-use App\Helpers\DatabaseHelper;
-use App\Exceptions\NotFoundObjectException;
+use App\Repositories\MovieRepository;
 
-#[AllowDynamicProperties]
+#[\AllowDynamicProperties]
 class Movie
 {
     private ?int $id = null;
@@ -20,72 +14,38 @@ class Movie
     private string $title;
 
     private string $format;
-
     private string $releaseYear = '';
 
     protected string $created_at;
 
     public function create(): void
     {
-        $sql = "INSERT INTO movies (title, format, user_id, release_year, created_at) VALUES (:title, :format, :user_id, :release_year, NOW())";
-        $params = [
-            ':title' => $this->title,
-            ':format' => $this->format,
-            ':user_id' => $this->userId,
-            ':release_year' => $this->releaseYear,
-        ];
-
-        DatabaseHelper::executeQuery($sql, $params);
-
-        $this->id = Database::getInstance()->getConnection()->lastInsertId();
+        $repository = new MovieRepository();
+        $this->id = $repository->create($this->title, $this->format, $this->userId, $this->releaseYear);
     }
 
     public function update(): void
     {
-        $sql = "UPDATE movies SET title = :title, format = :format WHERE id = :id";
-        $params = [
-            ':id' => $this->id,
-            ':title' => $this->title,
-            ':format' => $this->format
-        ];
-
-        DatabaseHelper::executeQuery($sql, $params);
+        $repository = new MovieRepository();
+        $repository->update($this->id, $this->title, $this->format);
     }
 
     public function delete(): void
     {
-        $sql = "DELETE FROM movies WHERE id = :id";
-        $params = [':id' => $this->id];
-
-        DatabaseHelper::executeQuery($sql, $params);
+        $repository = new MovieRepository();
+        $repository->delete($this->id);
     }
 
-    public static function getMoviesByUserId(int $userId): array
-    {
-        $sql = "SELECT * FROM movies WHERE user_id = :userId";
-        $params = [':userId' => $userId];
-
-        return DatabaseHelper::executeFetchAll($sql, $params, 'App\Models\Movie');
-    }
-
-    /**
-     * @throws NotFoundObjectException
-     */
     public static function getById(int $id): ?Movie
     {
-        $sql = "SELECT * FROM movies WHERE id = :id";
-        $params = [':id' => $id];
-
-        $result = DatabaseHelper::executeFetchObject($sql, $params, 'App\Models\Movie');
-
-        return $result ?? throw new NotFoundObjectException();
+        $repository = new MovieRepository();
+        return $repository->getById($id);
     }
 
     public static function getAllMovies(): ?array
     {
-        $sql = "SELECT * FROM movies";
-
-        return DatabaseHelper::executeFetchAll($sql, null, 'App\Models\Movie');
+        $repository = new MovieRepository();
+        return $repository->getAllMovies();
     }
 
     public function setTitle(string $title): void
@@ -133,7 +93,8 @@ class Movie
         $this->userId = $userId;
     }
 
-    public function getActors(): array {
+    public function getActors(): array
+    {
         return Actor::getActorsByMovieId($this->getId());
     }
 
@@ -149,15 +110,13 @@ class Movie
 
     public static function getMoviesByCustomQuery($sql): ?array
     {
-        $db = Database::getInstance();
+        $repository = new MovieRepository();
+        return $repository->getMoviesByCustomQuery($sql);
+    }
 
-        try {
-            $stmt = $db->getConnection()->prepare($sql);
-            $stmt->execute();
-            $results = $stmt->fetchAll(PDO::FETCH_CLASS, 'App\Models\Movie');
-            return ($results !== false) ? $results : null;
-        } catch (PDOException $e) {
-            exit("Error: " . $e->getMessage());
-        }
+    public static function getMoviesByUserId($sql): ?array
+    {
+        $repository = new MovieRepository();
+        return $repository->getMoviesByUserId($sql);
     }
 }

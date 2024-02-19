@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use AllowDynamicProperties;
-use App\Exceptions\NotFoundObjectException;
-use App\Helpers\DatabaseHelper;
 use DateTime;
+use App\Helpers\Database;
+use AllowDynamicProperties;
+use App\Helpers\DatabaseHelper;
+use App\Exceptions\NotFoundObjectException;
 
 #[AllowDynamicProperties]
 class User

@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use AllowDynamicProperties;
-use App\Helpers\DatabaseHelper;
-use App\Models\Database;
-use Exception;
+use App\Repositories\ActorRepository;
 
-#[AllowDynamicProperties]
+#[\AllowDynamicProperties]
 class Actor
 {
     protected int $id;
@@ -43,62 +40,31 @@ class Actor
 
     public function create(): void
     {
-        $sql = "INSERT INTO actors (movie_id, name) VALUES (:movie_id, :name)";
-        $params = [
-            ':movie_id' => $this->movieId,
-            ':name' => $this->actorName
-        ];
-
-        DatabaseHelper::executeQuery($sql, $params);
-
-        $this->id = Database::getInstance()->getConnection()->lastInsertId();
-
+        $repository = new ActorRepository();
+        $this->id = $repository->create($this->movieId, $this->actorName);
     }
 
     public function update(): void
     {
-        $sql = "UPDATE actors SET movie_id = :movie_id, name = :name WHERE id = :id";
-        $params = [
-            ':id' => $this->id,
-            ':movie_id' => $this->movieId,
-            ':name' => $this->actorName
-        ];
-
-        DatabaseHelper::executeQuery($sql, $params);
+        $repository = new ActorRepository();
+        $repository->update($this->id, $this->movieId, $this->actorName);
     }
 
     public function delete(): void
     {
-        $sql = "DELETE FROM actors WHERE id = :id";
-        $params = [':id' => $this->id];
+        $repository = new ActorRepository();
+        $repository->delete($this->id);
+    }
 
-        DatabaseHelper::executeQuery($sql, $params);
+    public static function getById(int $id): ?self
+    {
+        $repository = new ActorRepository();
+        return $repository->getById($id);
     }
 
     public static function getActorsByMovieId(int $movieId): array
     {
-        $sql = "SELECT * FROM actors WHERE movie_id = :movie_id";
-        $params = [':movie_id' => $movieId];
-
-        return DatabaseHelper::executeFetchAll($sql, $params, 'App\Models\Actor');
+        $repository = new ActorRepository();
+        return $repository->getActorsByMovieId($movieId);
     }
-
-    public static function getById(int $id): self
-    {
-        $sql = "SELECT * FROM actors WHERE id = :id";
-        $params = [':id' => $id];
-
-        return DatabaseHelper::executeFetchObject($sql, $params, 'App\Models\Actor');
-    }
-
-    public function getActors(): array {
-        return self::getActorsByMovieId($this->getId());
-    }
-
-    /**
-     * @throws Exception
-     */
-    // public function getActors(): array {
-    //     return self::getActorsByMovieId($this->getId());
-    // }
 }
