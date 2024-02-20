@@ -14,7 +14,8 @@ class Movie
     private string $title;
 
     private string $format;
-    private string $releaseYear = '';
+
+    private string $releaseYear;
 
     protected string $created_at;
 
@@ -27,7 +28,7 @@ class Movie
     public function update(): void
     {
         $repository = new MovieRepository();
-        $repository->update($this->id, $this->title, $this->format);
+        $repository->update($this->id, $this->title, $this->format, $this->releaseYear);
     }
 
     public function delete(): void

@@ -10,4 +10,16 @@ class ActorService
     {
         return Actor::getActorsByMovieId($movieId);
     }
+
+    public static function deleteActors(array $deletedActorIds): void
+    {
+        if (!empty($deletedActorIds)) {
+            foreach ($deletedActorIds as $deletedActorId) {
+                $actor = Actor::getById($deletedActorId);
+                if ($actor) {
+                    $actor->delete();
+                }
+            }
+        }
+    }
 }

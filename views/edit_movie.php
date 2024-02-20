@@ -11,15 +11,21 @@
         <div class="form-group">
             <label for="format">Format:</label>
             <select id="format" name="format" class="form-control">
-                <option value="VHS" <?php if ($movie->getFormat() == 'VHS') echo 'selected'; ?>>VHS</option>
-                <option value="DVD" <?php if ($movie->getFormat() == 'DVD') echo 'selected'; ?>>DVD</option>
-                <option value="Blu-ray" <?php if ($movie->getFormat() == 'Blu-ray') echo 'selected'; ?>>Blu-ray</option>
+                <option value="VHS" <?php if ($movie->getFormat() == 'VHS') {
+                    echo 'selected';
+                } ?>>VHS</option>
+                <option value="DVD" <?php if ($movie->getFormat() == 'DVD') {
+                    echo 'selected';
+                } ?>>DVD</option>
+                <option value="Blu-ray" <?php if ($movie->getFormat() == 'Blu-ray') {
+                    echo 'selected';
+                } ?>>Blu-ray</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="realise_year">Realise date</label>
-            <input type="date" id="realise_year" name="realise_year" class="form-control"  value="<?php echo $movie->getReleaseYear(); ?>" required>
+            <label for="release_year">Realise date</label>
+            <input type="number" id="release_year"  min="1900" max="2099" name="release_year" class="form-control"  value="<?php echo $movie->release_year; ?>" required>
         </div>
 
         <?php foreach ($movie->getActors() as $actor): ?>

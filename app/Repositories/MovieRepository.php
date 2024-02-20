@@ -27,14 +27,15 @@ class MovieRepository
         }
     }
 
-    public function update(int $id, string $title, string $format): void
+    public function update(int $id, string $title, string $format, string $releaseYear): void
     {
         try {
-            $sql = "UPDATE movies SET title = :title, format = :format WHERE id = :id";
+            $sql = "UPDATE movies SET title = :title, format = :format, release_year = :release_year WHERE id = :id";
             $stmt = Database::getInstance()->getConnection()->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->bindParam(':title', $title, PDO::PARAM_STR);
             $stmt->bindParam(':format', $format, PDO::PARAM_STR);
+            $stmt->bindParam(':release_year', $releaseYear, PDO::PARAM_STR);
             $stmt->execute();
         } catch (PDOException $e) {
             throw new DatabaseException("Error updating movie: " . $e->getMessage());

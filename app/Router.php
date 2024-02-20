@@ -69,8 +69,5 @@ $movieService = new MovieService();
 $actorService = new ActorService();
 $movieFilterService = new MovieFilterService();
 
-// Створення об'єкта маршрутизатора з передачею залежностей
 $router = new Router($movieService, $actorService, $movieFilterService);
-
-// Виклик методу __invoke
 $router($routes);

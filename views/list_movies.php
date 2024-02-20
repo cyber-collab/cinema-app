@@ -5,7 +5,9 @@
     <form action="/movie-upload" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <input type="file" class="form-control" id="file" name="file" accept=".txt">
-            <button type="submit">Upload</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Upload file</button>
         </div>
     </form>
 

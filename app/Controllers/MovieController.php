@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use Exception;
 use App\Models\Movie;
 use App\Services\MovieService;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +23,7 @@ class MovieController
 
     public function createMovie(RouteCollection $routes, Request $request): void
     {
-        $this->movieService->createMovie($request->get('title'), $request->get('format'), $request->get('realise_year'), $request->get('actor_text'));
+        $this->movieService->createMovie($request->get('title'), $request->get('format'), $request->get('release_year'), $request->get('actor_text'));
 
         header("Location: /profile/list_movies");
         exit();
@@ -33,6 +32,7 @@ class MovieController
     public function editMovieForm(RouteCollection $routes, ?Request $request, ?int $id): Response
     {
         $movie = Movie::getById($id);
+
         if (!$movie) {
             return new Response(404, Response::HTTP_NOT_FOUND, ['Location' => '/profile/list_movies']);
         }
@@ -44,7 +44,7 @@ class MovieController
     {
         $deletedActors = $request->get('deleted_actors');
 
-        $this->movieService->editMovie($id, $request->get('title'), $request->get('format'), $request->get('realise_year'), $request->get('actor_text'), $deletedActors);
+        $this->movieService->editMovie($id, $request->get('title'), $request->get('format'), $request->get('release_year'), $request->get('actor_text'), $deletedActors);
 
         header("Location: /profile/list_movies");
         exit();

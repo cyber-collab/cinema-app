@@ -7,8 +7,8 @@
             <input type="text" id="title" name="title" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="realise_year">Realise date</label>
-            <input type="date" id="realise_year" name="realise_year" class="form-control" required>
+            <label for="release_year">Realise date</label>
+            <input type="number"  min="1900" max="2099" id="release_year" name="release_year" class="form-control" required>
         </div>
         <div class="form-group">
             <label for="format">Status:</label>
