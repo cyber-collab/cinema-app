@@ -5,13 +5,19 @@
     <?php if (empty($movies)): ?>
         <p>No movies found.</p>
     <?php else: ?>
-        <form action="/filter-movies" method="post">
-            <div class="form-group">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </form>
+    <form action="/filter-movies" method="post">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="title">Actors:</label>
+            <input type="text" id="actor" name="actor" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
 
         <?php foreach ($movies as $movie): ?>
         <div class="mb-4">
@@ -25,7 +31,7 @@
             <?php foreach ($movie->actors as $actor): ?>
                 <li class="list-group-item">
                     <?php if (!empty($actor->name)): ?>
-                        <strong>Actors:</strong> <?php echo $actor->name; ?><br>
+                        <strong>Actor:</strong> <?php echo $actor->name; ?><br>
                     <?php else: ?>
                         <p>No answers found for this question.</p>
                     <?php endif; ?>

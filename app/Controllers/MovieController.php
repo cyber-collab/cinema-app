@@ -61,7 +61,7 @@ class MovieController
     public function filterMovies(RouteCollection $routes, Request $request): Response
     {
         $title = $request->get('title');
-        $actor = $request->get('actor_text');
+        $actor = $request->get('actor');
 
         $movies = $this->movieFilterService->filterMovies($title, $actor);
 
