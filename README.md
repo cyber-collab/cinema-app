@@ -1,3 +1,12 @@
+**About this project**
+==================================
+For this project, used MVC pattern, like a symfony.
+We have controllers in folder Controllers(movies, user)
+We have folder model in Models(movie, actor, user)
+We have file router.php in path: web/router.php, where can register routes
+We have file config.php, where can connected to DATABASE
+
+
 Start project
 ==================================
 
@@ -7,8 +16,8 @@ Please, clone this repository form github, by this options:
 
 Option|Links
 -------|--------------------------
-SHH|[git@github.com:cyber-collab/native-php.git](git@github.com:cyber-collab/native-php.git)
-HTTPS|[https://github.com/cyber-collab/native-php.git](https://github.com/cyber-collab/native-php.git)
+SHH|[git@github.com:cyber-collab/cinema-app.git](git@github.com:cyber-collab/cinema-app.git)
+HTTPS|[https://github.com/cyber-collab/cinema-app.git](https://github.com/cyber-collab/cinema-app.git)
 
 # How to run docker #
 
