@@ -1,5 +1,6 @@
 **About this project**
 ==================================
+
 For this project, used MVC pattern, like a symfony.
 We have controllers in folder Controllers(movies, user)
 We have folder model in Models(movie, actor, user)
@@ -41,7 +42,8 @@ Webserver|[localhost](http://localhost)
 # Start docker #
 
 1. Please, clone from .env.example to .env and setup settings for database
-2. Run `composer install` for install dependencies for this project
+2. Run `composer install` for install dependencies for this project.
+3. For init database please run docker-compose up -d and by address [localhost:8081](http://localhost:8081/index.php?route=/database/import&db=database), going to phpmyadmin and import database.
 
 # How to using this functionality #
 
