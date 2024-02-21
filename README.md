@@ -7,7 +7,6 @@ We have folder model in Models(movie, actor, user)
 We have file router.php in path: web/router.php, where can register routes
 We have file config.php, where can connected to DATABASE
 
-
 Start project
 ==================================
 
@@ -39,9 +38,9 @@ Service|Address outside containers
 -------|--------------------------
 Webserver|[localhost](http://localhost)
 
-# Start docker #
+# Run project #
 
-1. Please, clone from .env.example to .env and setup settings for database
+1. Please, copy .env.example to .env and setup settings for database
 2. Run `composer install` for install dependencies for this project.
 3. For init database please run docker-compose up -d and by address [localhost:8081](http://localhost:8081/index.php?route=/database/import&db=database), going to phpmyadmin and import database.
 
