@@ -38,6 +38,11 @@ Service|Address outside containers
 -------|--------------------------
 Webserver|[localhost](http://localhost)
 
+## Install composer and PHP for local machine with Windows OS ##
+
+For installing PHP, please, look this link https://www.geeksforgeeks.org/how-to-install-php-in-windows-10/
+For installing composer looking this site https://www.geeksforgeeks.org/how-to-install-php-composer-on-windows/
+
 # Run project #
 
 1. Please, copy .env.example to .env and setup settings for database
